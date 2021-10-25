@@ -1,11 +1,11 @@
-function [w,f,normgrad] = SLBFGS(fun,gfun,Xtrain,~,w,bsz,kmax,tol)
+function [w,f_arr,normgrad] = SLBFGS(fun,gfun,Xtrain,~,w,bsz,kmax,tol)
 n = size(Xtrain,1);
-f = zeros(kmax,1);
+f_arr = zeros(kmax,1);
 normgrad = zeros(kmax,1);
 iter = 1;
 nor = tol+1;
 m = 5;
-eta = 0.5;
+eta = 0.1;
 gam = 0.9; % line search step factor
 jmax = ceil(log(1e-14)/log(gam)); % max # of iterations in line search
 dim = size(w, 1);
@@ -38,13 +38,13 @@ while nor > tol && iter <= kmax
     w = wnew;
     g = gnew;
     nor = norm(g);
-    f(iter) = f;
+    f_arr(iter) = f;
     normgrad(iter) = nor;
-    fprintf('k = %d, f = %d, ||g|| = %d\n',iter,f(iter),normgrad(iter));
+    fprintf('k = %d, f = %d, ||g|| = %d\n',iter,f_arr(iter),normgrad(iter));
     iter = iter + 1;
 end
 iter = iter - 1;
-fprintf('k = %d, f = %d, ||g|| = %d\n',iter,f(iter),normgrad(iter));
+fprintf('k = %d, f = %d, ||g|| = %d\n',iter,f_arr(iter),normgrad(iter));
 end
 
 function p = finddirection(g,s,y,rho)
