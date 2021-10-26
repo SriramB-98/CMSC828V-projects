@@ -1,7 +1,7 @@
-function mnist_2categories_quad_hypersurface_tikhonov(nPCA, opt)
+function mnist_2categories_quad_hypersurface_tikhonov(nPCA, opt, bsz, bszH, eta, M)
 close all
 fsz = 20;
-fprintf('nPCA: %d, opt %s \n', nPCA, opt);
+fprintf('nPCA: %d, opt %s, bsz %d, %bszH %d, eta %d, M %d \n', nPCA, opt, bsz, bszH, eta, M);
 %% Pick the number of PCAs for the representation of images
 % nPCA = 10;
 %%
@@ -87,13 +87,13 @@ label(n1train+1:Ntrain) = -1;
 dim = nPCA;
 w = ones(dim^2+dim+1,1);
 %w(1:dim^2) = reshape(eye(dim),1,[]);
-kmax = 1000; % the max number of iterations
+kmax = 100; % the max number of iterations
 tol = 1e-6;
 % call the optimizer
 lam = 0.001;
 fun = @(I,w)qloss(I,Xtrain, label,w,lam);
 gfun = @(I,w)qlossgrad(I,Xtrain,label,w,lam);
-bsz = 512;
+% bsz = 1000;
 if strcmp(opt, 'SGD')
     [w,f,gnorm] = SGD(fun,gfun,Xtrain, label,w,bsz,kmax,tol);
 elseif strcmp(opt, 'SAdam')
@@ -101,7 +101,7 @@ elseif strcmp(opt, 'SAdam')
 elseif strcmp(opt, 'SNAG')
     [w,f,gnorm] = SNAG(fun,gfun,Xtrain, label,w,bsz,kmax,tol);
 elseif strcmp(opt, 'SLBFGS')
-    [w,f,gnorm] = SLBFGS(fun,gfun,Xtrain, label,w,bsz,kmax,tol);
+    [w,f,gnorm] = SLBFGS(fun,gfun,Xtrain,w,bsz,bszH,M,eta,kmax,tol);
 end
 % plot the objective function
 figure;
@@ -109,7 +109,8 @@ plot(f,'Linewidth',2);
 xlabel('iter','fontsize',fsz);
 ylabel('f','fontsize',fsz);
 set(gca,'fontsize',fsz,'Yscale','log');
-savefig(strcat(opt,'_f_iter_', string(nPCA)));
+a = strcat(opt,'_f_iter_', string(nPCA), '_', string(bsz), '_', string(bszH), '_', string(eta), '_', string(M), '.png');
+saveas(gcf, a);
 % plot the norm of the gradient
 pause(5);
 figure;
@@ -117,7 +118,8 @@ plot(gnorm,'Linewidth',2);
 xlabel('iter','fontsize',fsz);
 ylabel('||g||','fontsize',fsz);
 set(gca,'fontsize',fsz,'Yscale','log');
-savefig(strcat(opt,'_gradf_iter_', string(nPCA)));
+b = strcat(opt,'_gradf_iter_', string(nPCA), '_', string(bsz), '_', string(bszH), '_', string(eta), '_', string(M), '.png');
+saveas(gcf, b);
 
 %% apply the results to the test set
 Ntest = n1test+n2test;

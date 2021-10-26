@@ -1,50 +1,82 @@
-function [w,f_arr,normgrad] = SLBFGS(fun,gfun,Xtrain,~,w,bsz,kmax,tol)
+function [w,f_arr,normgrad] = SLBFGS(fun,gfun,Xtrain,w,bsz,bszH,M,eta,kmax,tol)
+tic;
 n = size(Xtrain,1);
-f_arr = zeros(kmax,1);
-normgrad = zeros(kmax,1);
 iter = 1;
 nor = tol+1;
 m = 5;
-eta = 0.1;
-gam = 0.9; % line search step factor
-jmax = ceil(log(1e-14)/log(gam)); % max # of iterations in line search
+% gam = 0.9; % line search step factor
+% jmax = 10; %ceil(log(1e-14)/log(gam)); % max # of iterations in line search
 dim = size(w, 1);
 s = zeros(dim,m);
 y = zeros(dim,m);
 rho = zeros(1,m);
+%IH = randperm(n, bszH);      % random index selection
 Ig = randperm(n,bsz);
 g = gfun(Ig, w);
+wnew = w - eta*g;
+gnew = gfun(Ig, wnew);
+s(:,1) = wnew - w;
+y(:,1) = gnew - g;
+rho(1) = 1/(s(:,1)'*y(:,1));
+Ig = randperm(n,bsz);
+g = gfun(Ig, w);
+num_batches = ceil(n/bsz);
+update_freq = ceil(num_batches/5);
+f_arr = zeros(kmax*6,1);
+normgrad = zeros(kmax*6,1);
+plot_it = 1;
 while nor > tol && iter <= kmax
-    if iter < m
-        p = finddirection(g,s(:,1 : iter),y(:,1 : iter),rho(1 : iter));
-    else
-        p = finddirection(g,s,y,rho);
+    for it = 1: num_batches
+        if num_batches*(iter - 1) + it < m
+            In = 1 : num_batches*(iter - 1) + it;  
+%             s(:,In)
+%             y(:,In)
+%             rho(In)
+            p = finddirection(g,s(:,In),y(:,In),rho(In));
+        else
+            p = finddirection(g,s,y,rho);
+        end
+        
+%         [a,j, ~] = linesearch(Ig,w,p,g,fun,eta,gam,jmax);
+%         if j == jmax
+%             p = -g;
+%             [a,~, ~] = linesearch(Ig,w,p,g,fun,eta,gam,jmax);
+%         end
+        step = eta*p;
+        wnew = w + step;
+        IH = randperm(n, bszH);
+        Ig = IH(:, 1:bsz);
+        gnew = gfun(Ig, wnew);
+        
+        if (mod(num_batches*(iter - 1) + (it-1),M) == 0)
+            gnewH = gfun(IH, wnew);
+            gH = gfun(IH, w);
+            % replace oldest (s,y) vector pair and associated rho step
+            s = circshift(s,[0,1]); 
+            y = circshift(y,[0,1]);
+            rho = circshift(rho,[0,1]);
+            s(:,1) = step;
+            y(:,1) = gnewH - gH;
+            rho(1) = 1/(step'*y(:,1));
+        end
+        w = wnew;
+        g = gnew;
+        if mod(it, update_freq) == 0
+            nor = norm(g);
+            %a = num_batches*(iter - 1) + floor((it)/update_freq)
+            f_arr(plot_it) = fun(1:n, w);
+            normgrad(plot_it) = nor;
+            plot_it = plot_it + 1;
+        end
     end
-    [a,j, f] = linesearch(Ig,w,p,g,fun,eta,gam,jmax);
-    if j == jmax
-        p = -g;
-        [a,~, f] = linesearch(Ig,w,p,g,fun,eta,gam,jmax);
-    end
-    step = a*p;
-    wnew = w + step;
-    Ig = randperm(n,bsz);
-    gnew = gfun(Ig, wnew);
-    s = circshift(s,[0,1]); 
-    y = circshift(y,[0,1]);
-    rho = circshift(rho,[0,1]);
-    s(:,1) = step;
-    y(:,1) = gnew - g;
-    rho(1) = 1/(step'*y(:,1));
-    w = wnew;
-    g = gnew;
-    nor = norm(g);
-    f_arr(iter) = f;
-    normgrad(iter) = nor;
-    fprintf('k = %d, f = %d, ||g|| = %d\n',iter,f_arr(iter),normgrad(iter));
+    %fprintf('k = %d, f = %d, ||g|| = %d\n',iter,f_arr(plot_it-1),normgrad(plot_it-1));
     iter = iter + 1;
+
 end
 iter = iter - 1;
 fprintf('k = %d, f = %d, ||g|| = %d\n',iter,f_arr(iter),normgrad(iter));
+toc;
+
 end
 
 function p = finddirection(g,s,y,rho)
@@ -59,6 +91,7 @@ for i = 1 : m
     g = g - a(i)*y(:,i);
 end
 gam = s(:,1)'*y(:,1)/(y(:,1)'*y(:,1)); % H0 = gam*eye(dim)
+
 g = g*gam;
 for i = m :-1 : 1
     aux = rho(i)*y(:,i)'*g;
