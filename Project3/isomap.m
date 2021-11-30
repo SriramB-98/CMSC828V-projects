@@ -2,11 +2,10 @@ function isomap(dat_name)
 fsz = 16;
 dat = load(sprintf("%s.mat",dat_name));
 X = dat.data3;
-
-pcs = 10;
-coeff = pca(X);
-coeff = coeff(:,1:pcs);
-X = X*coeff;
+% coeff = pca(X);
+% pcs = 16
+% coeff = coeff(:,1:pcs);
+% X = X*coeff;
 
 [n,dim] = size(X);
 %% compute pairwise distances
@@ -26,19 +25,19 @@ for i = 1 : n
     dneib(i,:) = dsort(1:k);
     ineib(i,:) = isort(1:k);
 end
-figure();
-hold on;
-plot3(X(:,1),X(:,2),X(:,3),'.','Markersize',15,'color','b');
-daspect([1,1,1])
-for i = 1 : n
-    for j = 1 : k
-        edge = X([i,ineib(i,j)],:);
-        plot3(edge(:,1),edge(:,2),edge(:,3),'k','Linewidth',0.25);
-    end
-end
-set(gca,'Fontsize',fsz);
-view(3);
-saveas(gcf, sprintf("%s_isomap_graph.png", dat_name))
+% figure();
+% hold on;
+% plot3(X(:,1),X(:,2),X(:,3),'.','Markersize',15,'color','b');
+% daspect([0,1,1])
+% for i = 1 : n
+%     for j = 1 : k
+%         edge = X([i,ineib(i,j)],:);
+%         plot3(edge(:,1),edge(:,2),edge(:,3),'k','Linewidth',0.25);
+%     end
+% end
+% set(gca,'Fontsize',fsz);
+% view(3);
+% saveas(gcf, sprintf("%s_isomap_graph.png", dat_name))
 
 %
 % STEP 2: compute shortest paths in the graph
@@ -89,11 +88,11 @@ end
 % symmetrize D
 D = 0.5*(D + D');
 % D(isinf(D)) = 100;
-Y = mdscale(D,2, 'criterion', 'metricsstress');
+Y = mdscale(D,3, 'criterion', 'metricsstress');
 figure();
 hold on
 for ii = 1 : n
-    plot(Y(ii,1),Y(ii,2),'.','Markersize',15,'color',c(ii,:));
+    plot3(Y(ii,1),Y(ii,2),Y(ii,3),'.','Markersize',15,'color',c(ii,:));
 end
 % plot edges
 % for i = 1 : n
@@ -105,11 +104,12 @@ end
 % plot path
 for j = 2 : length(p)
     I = [p(j-1),p(j)];
-    plot(Y(I,1),Y(I,2),'Linewidth',2,'color','r');
+    plot3(Y(I,1),Y(I,2),Y(I,3),'Linewidth',2,'color','r');
 end
 set(gca,'Fontsize',fsz);
+view(3);
 daspect([1,1,1]);
-saveas(gcf, sprintf("%s_isomap_rolled_out.png", dat_name))
+saveas(gcf, sprintf("%s_isomap_rolled_out_3d.png", dat_name))
 
 end
 
