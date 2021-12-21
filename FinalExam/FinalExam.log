@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.23 (MiKTeX 21.8) (preloaded format=pdflatex 2021.9.1)  18 DEC 2021 01:49
+This is pdfTeX, Version 3.141592653-2.6-1.40.23 (MiKTeX 21.8) (preloaded format=pdflatex 2021.9.1)  20 DEC 2021 22:06
 entering extended mode
 **./FinalExam.tex
 (FinalExam.tex
@@ -1063,24 +1063,24 @@ Package pdftex.def Info: pk_vs_k.png  used on input line 47.
 [1
 
 {C:/Users/Sriram/AppData/Local/MiKTeX/pdftex/config/pdftex.map} <./pk_vs_k.png>
-]
-<random_SIR_runs.png, id=37, 396.48125pt x 262.9825pt>
+] [2]
+<random_SIR_runs.png, id=48, 396.48125pt x 262.9825pt>
 File: random_SIR_runs.png Graphic file (type png)
 <use random_SIR_runs.png>
-Package pdftex.def Info: random_SIR_runs.png  used on input line 103.
+Package pdftex.def Info: random_SIR_runs.png  used on input line 105.
 (pdftex.def)             Requested size: 198.24013pt x 131.49092pt.
- [2] [3 <./random_SIR_runs.png>] [4] (FinalExam.aux)
+ [3 <./random_SIR_runs.png>] [4] (FinalExam.aux)
 Package rerunfilecheck Info: File `FinalExam.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
  ) 
 Here is how much of TeX's memory you used:
  32199 strings out of 478927
  750085 string characters out of 2852062
- 1142880 words of memory out of 3000000
+ 1141881 words of memory out of 3000000
  49462 multiletter control sequences out of 15000+600000
  418021 words of font info for 83 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 84i,11n,89p,926b,609s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 84i,12n,89p,733b,609s stack positions out of 5000i,500n,10000p,200000b,80000s
 <C:/Users/Sriram/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm
 /cmbx12.pfb><C:/Users/Sriram/AppData/Local/Programs/MiKTeX/fonts/type1/public/a
 msfonts/cm/cmex10.pfb><C:/Users/Sriram/AppData/Local/Programs/MiKTeX/fonts/type
@@ -1097,7 +1097,7 @@ c/amsfonts/cm/cmsy10.pfb><C:/Users/Sriram/AppData/Local/Programs/MiKTeX/fonts/t
 ype1/public/amsfonts/cm/cmsy5.pfb><C:/Users/Sriram/AppData/Local/Programs/MiKTe
 X/fonts/type1/public/amsfonts/cm/cmsy7.pfb><C:/Users/Sriram/AppData/Local/Progr
 ams/MiKTeX/fonts/type1/public/amsfonts/cm/cmtt10.pfb>
-Output written on FinalExam.pdf (4 pages, 229697 bytes).
+Output written on FinalExam.pdf (4 pages, 224087 bytes).
 PDF statistics:
  141 PDF objects out of 1000 (max. 8388607)
  30 named destinations out of 1000 (max. 500000)

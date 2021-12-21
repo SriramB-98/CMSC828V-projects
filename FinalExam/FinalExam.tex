@@ -53,7 +53,7 @@ For the questions with a coding component, please refer to the Jupyter notebook 
 
 \item We fit the log-binned data to the form $p_k = Ce^{-\alpha k}k^{-\tau}$.
 
-  Taking $\log$ on both sides and rearranging, we have $\log p_k = \log C -\alpha k -\tau \log k$. Using a linear least squares solver to solve for $C, \alpha, $ and $\tau$, we get $C = 0.3147, \alpha=0.0447, \tau = 1.0006$.
+  Taking $\log$ on both sides and rearranging, we have $\log p_k = \log C -\alpha k -\tau \log k$. Using a linear least squares solver to solve for $C, \alpha, $ and $\tau$, we get $C = 0.3014, \alpha=0.0457, \tau = 0.9837$.
   
   The estimated $p_k$ vs $k$ curve is plotted in Figure \ref{fig:pk_vs_k}
 
@@ -73,7 +73,7 @@ z_2 &= \frac{\Li_{\tau - 2}(e^{-\alpha})-\Li_{\tau - 1}(e^{-\alpha})}{\Li_{\tau 
 
 where $\Li_s(z) = \sum_{k=1}^\infty \frac{z^k}{k^s}$ is the polylogarithm function.  
 
-Using the estimated values of $\alpha$ and $\tau$ for computing $z_1$ and $z_2$ and plugging it into the equation for $\ell$, we get $\ell \approx 3.252$
+Using the estimated values of $\alpha$ and $\tau$ for computing $z_1$ and $z_2$ and plugging it into the equation for $\ell$, we get $\ell \approx 3.2551$
 
 \item The clustering coefficient for the actual network is estimated to be $\approx 0.1786$
 
@@ -86,9 +86,11 @@ Then assuming that $k_i$ and $k_j$ are independent, $$ C_{random} = E_{k_i, k_j 
 
 Plugging this into the formula for $C_{random}$, we get $$C_{random} = \frac{[\langle k^2 \rangle - \langle k \rangle]^2}{n\langle k \rangle^3} = \frac{z_2^2}{n z_1^3}$$
 
-Using the values of $z_1$ and $z_2$ from the previous question, we get $C_{random} \approx 0.0089$
+Using the values of $z_1$ and $z_2$ from the previous question, we get $C_{random} \approx 0.0088$
 
-\item The clustering coefficient for the random graph is much lower than that of the actual graph. This is because the parameters of the probability distribution we estimated from the log-binned data predict much lower high degree nodes than are actually found in the model, as can be seen in \ref{fig:pk_vs_k} where the actual curve is much above the curve of the estimated probability distribution. These high degree nodes contribute disproportionately to the clustering coefficient. Since the model predicts lower number of high degree nodes, it also predicts low clustering coefficient.
+\item The actual graph shows characteristics of small-world networks, which typically have a ``small" average shortest path lengths scaling as $\log N$ where $N$ is the total number of nodes, and high clustering coefficient as compared to chance. The random graph, however, has a small clustering coefficient. In fact, as $N$ approaches $\infty$, the clustering coefficient for the random graph approaches $0$. 
+
+The clustering coefficient for the random graph is much lower than that of the actual graph. This is because the parameters of the probability distribution we estimated from the log-binned data predict much lower high degree nodes, or hubs, than are actually found in the graph, as can be seen in \ref{fig:pk_vs_k} where the actual distribution has a much fatter tail as compared to the random graph. These hubs contribute disproportionately to the clustering coefficient. Since the model predicts lower number of hubs, it also predicts low clustering coefficient.
 
 The average shortest path length for the random graph is also lower that that of the actual graph. While the clustering coefficient of the random graph is indeed much lower than the clustering coefficient of the actual network, there exist quite a few more nodes with only 1 neighbour as compared to what the model predicts. This means that distance between these nodes and the rest are higher than what the model predicts, which implies that average shortest path length is higher than the prediction by the model. 
 
@@ -106,14 +108,17 @@ Using empirical estimates for  $\langle k^2 \rangle \approx 185.437$ and $\langl
 
 \end{figure}
 
-We observe an epidemic in all 10 runs. Whenever an epidemic is observed, around 25 - 29\% of nodes are infected at the peak of the epidemic. The exact fractions for each of the 10 runs are $0.927, 0.9214, 0.921, 0.9273, 0.9101, 0.9292, 0.9242, 0.9284, 0.9206, 0.9194$. 
-The mean and standard deviation of the fraction of affected nodes during epidemics is 0.9229 and 0.0054
+We observe an epidemic in 8 runs. Whenever an epidemic is observed, around 25 - 29\% of nodes are infected at the peak of the epidemic. The exact fractions for each of the 10 runs are 
+
+$0.699, 0.703, 0.7053, 0.7003, 0.7042, 0.6999, 0.0004, 0.0005, 0.7046, 0.7148$. 
+
+The mean and standard deviation of the fraction of affected nodes during epidemics is 0.704 and 0.0046
 
 
 \item 
 
 \begin{enumerate}
-\item The critical transmissibility $T_c = \frac{G_0'(1)}{G_0''(1)} = \frac{z_1}{z_2} \approx 0.0457$
+\item The critical transmissibility $T_c = \frac{G_0'(1)}{G_0''(1)} = \frac{z_1}{z_2} \approx 0.0461$
 
 \item We solve the following equations to get the fraction of nodes infected  as a function of transmissibility $S(T)$ (fraction of nodes in the giant component in the transmissibility graph)
 
@@ -127,16 +132,18 @@ We first solve $h = G_1(h, T) = G_1(1 + (h-1)T)$. From \cite{newman}, we know th
 
 $$ h = \frac{\Li_{\tau -1}((1 + (h-1)T)e^{-\alpha})}{(1 + (h-1)T)\Li_{\tau -1}(e^{-\alpha})}$$
 
-Since we only need to know $S(0.4)$, we substitute $T=0.4$ and solve the equation numerically to get $h \approx 0.1144$
+Since we only need to know $S(0.4)$, we substitute $T=0.4$ and solve the equation numerically to get $h \approx 0.1128$
 
-Now, $S(0.4) = 1 - G_0(h, 0.4) = 1 - G_0(1 + 0.4(h-1))$. We have $G_0(x) = \frac{\Li_{\tau}(xe^{-\alpha})}{\Li_{\tau}(e^{-\alpha})}$. Substituting the value of $h$, we get $S(0.4) = 1 - G_0(1 + 0.4(0.11) ) \approx  0.6928$.
+Now, $S(0.4) = 1 - G_0(h, 0.4) = 1 - G_0(1 + 0.4(h-1))$. We have $G_0(x) = \frac{\Li_{\tau}(xe^{-\alpha})}{\Li_{\tau}(e^{-\alpha})}$. Substituting the value of $h$, we get $S(0.4) = 1 - G_0(1 + 0.4(0.11) ) \approx  0.6962$.
 
 \item Suppose that a fraction of nodes $p$ is randomly removed from the transmission graph. From \cite{cohen}, we know that ${G^*}_0(x, p, T) = G_0(1 + (1-p)(x-1), T )$ where ${G^*}_0(x)$ is the new generating function after removing the nodes. But $G_0(x, T) = G_0(1 + (x-1)T)$, therefore, ${G^*}_0(x, p, T) = G_0(1 + (1-p)T(x-1))$. 
-The criterion for this new graph to have a giant component is $(1-p)T \geq \frac{G_0'(1)}{G_0''(1)} \approx 0.0457$. Therefore, $1-p \geq 0.0457/0.4 = 0.11425$, or $p \leq 0.88575 = p_c$ If more than $p_c$ fraction of nodes are removed (in this case vaccinated), the graph no longer has a giant component and there will not be an epidemic.
+The criterion for this new graph to have a giant component is $(1-p)T \geq \frac{G_0'(1)}{G_0''(1)} \approx 0.0457$. Therefore, $1-p \geq 0.0461/0.4 = 0.11525$, or $p \leq 0.88475 = p_c$ If more than $p_c$ fraction of nodes are removed (in this case vaccinated), the graph no longer has a giant component and there will not be an epidemic.
 
 \end{enumerate}
 
-The critical transmissibility of the actual graph is 0.041 which is slightly lower than the theoretical estimate 0.0457. Also, the theoretical estimate of the fraction of nodes affected by the epidemic which is around 0.6928 is much smaller than the fractions observed in the 10 runs in Figure \ref{fig:random_SIR_runs}. This is because the theoretical model predicts much fewer high degree nodes as  compared to the actual graph. This is also reflected in the fact that the clustering coefficient predicted by the theoretical model is much lower than the actual clustering coefficient. These high degree nodes increase the connectivity of the graph and thus much more nodes are affected. Since these nodes are few in number, they only increase the critical transmissibility by a small amount, but the presence of even a few such nodes increase the number of affected nodes drastically.
+The critical transmissibility of the actual graph is 0.041 which is slightly lower than the theoretical estimate 0.0461. Also, the theoretical estimate of the fraction of nodes affected by the epidemic which is around 0.6962 is slightly smaller than the fractions observed in the 10 runs in Figure \ref{fig:random_SIR_runs}. 
+
+Critical transmissibility and fraction of affected nodes are inversely proportional. The higher the critical transmissibilty, the lower the fraction of affected nodes at $T=0.4$, or any fixed $T$. If the critical transmissibility is greater than 0.4, we do not observe epidemics and fraction affected is close to 0. This relationship is true for both the actual and the random graph.
 
 \end{enumerate}
 
